@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">📋 Commandes reçues</h1>
+    
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-gray-800 text-white">
+          <tr>
+            <th class="px-4 py-3 text-left">ID</th>
+            <th class="px-4 py-3 text-left">Nom</th>
+            <th class="px-4 py-3 text-left">Produit</th>
+            <th class="px-4 py-3 text-left">Qté</th>
+            <th class="px-4 py-3 text-left">Date</th>
+          </tr>
+        </thead>
+        <tbody id="tbody" class="divide-y divide-gray-200">
+        </tbody>
+      </table>
+    </div>
+    
+    <button onclick="load()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      🔄 Actualiser
+    </button>
+  </div>
+
+  <script>
+    async function load() {
+      const res = await fetch("/api/commandes");
+      const data = await res.json();
+      document.getElementById("tbody").innerHTML = data.map(c => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3">${c.id}</td>
+          <td class="px-4 py-3 font-medium">${c.nom}</td>
+          <td class="px-4 py-3">${c.produit}</td>
+          <td class="px-4 py-3">${c.quantite}</td>
+          <td class="px-4 py-3 text-sm text-gray-500">${new Date(c.date).toLocaleString('fr-FR')}</td>
+        </tr>
+      `).join("");
+    }
+    load();
+    setInterval(load, 5000); // auto-refresh toutes les 5s
+  </script>
+</body>
+</html>
